@@ -1,0 +1,36 @@
+`timescale 1ns / 1ps
+module moore_FSM(
+input clk,
+input reset,
+input in_bit,
+output reg unlock
+    );
+    
+parameter S0 =2'b00;
+parameter S1 =2'b01;
+parameter S2 =2'b10;
+parameter S3 =2'b11;
+reg [1:0] state, next_state;
+always@(posedge clk, posedge reset) begin
+if(reset)
+state<=S0;
+else 
+state<=next_state;
+end
+
+always@(*) begin
+case(state)
+S0: next_state=(in_bit==1)? S1: S0;
+S1: next_state=(in_bit==0)? S2: S1;
+S2: next_state=(in_bit==1)? S3: S0;
+S3: next_state =S0;
+default: next_state =S0;
+endcase
+end
+always@(*) begin
+if(state==S3)
+unlock =1'b1;
+else
+unlock =1'b0;
+end
+endmodule
