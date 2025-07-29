@@ -1,0 +1,34 @@
+`timescale 1ns / 1ps
+module Moore_FSM_tb;
+reg clk =0;
+reg in_bit;
+reg reset;
+wire unlock;
+
+moore_FSM uut(.clk(clk), .reset(reset), .in_bit(in_bit), .unlock(unlock)
+);
+
+always #5 clk=~clk;
+initial begin
+reset=1;
+in_bit=0;
+#10 reset =0;
+
+//Test with wrong bit string 
+in_bit = 1; #10;
+in_bit=1; #10;
+in_bit =0; #10;
+//Test with right bit string
+in_bit=1; #10;
+in_bit=0; #10;
+in_bit=1; #10;
+#10; //wait for the FSM set back to S0
+
+//Another test
+in_bit =1; #10;
+in_bit =1; #10;
+in_bit =0; #10;
+
+#20 $finish;
+end
+endmodule
